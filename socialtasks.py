@@ -161,9 +161,11 @@ def get_fully_qualified_path(short_path='/'):
 
 @app.route('/typeahead/json/', methods=['GET'])
 def typeahead():
-    if 'access_token' in session and session['expires'] <= time.time():
+    if 'access_token' in session and int(session['expires']) <= time.time():
         user_friends = fb_call('me/friends', session['access_token'])['data']
         return flask.jsonify(user_friends)
+    else:
+        return flask.jsonify({})
 
 @app.route('/close/', methods=['GET', 'POST'])
 def close():

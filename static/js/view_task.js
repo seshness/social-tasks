@@ -6,7 +6,7 @@ $(function () {
 	  url: '/task/comment/',
 	  data: {'content': $('#comment_text').val(), 'task_id': $('#comment_text').attr('task_id')},
 	  success: function(response) {
-        alert(response);
+        $('#comments').append(response);
 	  }
 	});
   });

@@ -14,16 +14,18 @@
 	</thead>
 	<tbody>
           {% for task in user_assigned %}
-	  <tr>
-            <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
-            <td class="pictures" width="100">
-	      <a href="http://www.facebook.com/{{task.assigner_id}}">
-		<img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
-	      </a>
-	    </td>
+          <tr>
+              <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
+              <td class="pictures" width="100">
+                  {% for assignee in task.assignees %}
+                  <a href="http://www.facebook.com/{{assignee.facebook_id}}">
+                      <img src="https://graph.facebook.com/{{assignee.facebook_id}}/picture" class="small-picture">
+                  </a>
+                  {% endfor %}
+              </td>
           </tr>
           {% endfor %}
-	</tbody>
+      </tbody>
       </table>
       <h3>Assigned to me</h3>
       <table class="zebra-striped">

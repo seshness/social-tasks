@@ -130,7 +130,8 @@ def index():
             app=app,
             me=me,
             appId=FBAPI_APP_ID,
-            token=access_token)
+            token=access_token,
+            content=home())
     else:
         print oauth_login_url(next_url=get_home())
         return redirect(oauth_login_url(next_url=get_home()))
@@ -138,6 +139,10 @@ def index():
 @app.route('/close/', methods=['GET', 'POST'])
 def close():
     return render_template('close.html')
+
+@app.route('/task/create', methods=['GET', 'POST'])
+def create_task():
+    return render_template('create_task.html')
 
 @app.route('/ajax/home', methods=['GET'])
 def home():

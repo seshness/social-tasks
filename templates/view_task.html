@@ -14,17 +14,17 @@
   </div>
   <div id="comments">
     <h3>Comments</h3>
-	{% for comment in task.comments %}
+	{% for comment in comments %}
       <div class="well">
 	    <div class="clearfix">
 	      <img src="https://graph.facebook.com/{{comment.author}}/picture" class="small-picture">
-		  <strong>{{comment.author_name}} says...</strong>
+		  <strong>{{comment['author_name']}} says...</strong>
 	    </div>
 	    <div>
-	      {{comment.contents}}
+	      {{comment['contents']}}
 	    </div>
 		<br><br>
-		<small>posted at {{comment.creation_time}}</small>
+		<small>posted at {{comment['creation_time']}}</small>
 	  </div>
 	{% endfor %}
   </div>

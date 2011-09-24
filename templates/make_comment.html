@@ -1,12 +1,12 @@
 <div class="well">
   <div class="clearfix">
     <img src="https://graph.facebook.com/{{ author }}/picture" class="small-picture">
-    <strong>{{ str(me['name']) }} says...</strong>
+    <strong>{{ me['name'] }} says...</strong>
   </div>
   <br />
   <blockquote >
     <p>{{ contents }}</p>
     <br />
-    <small>posted at {{ str(creation_time) }}</small>
+    <small>posted at {{ creation_time }}</small>
   </blockquote>
 </div>

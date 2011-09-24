@@ -7,7 +7,7 @@ import urllib2
 import time
 import datetime
 
-from flask import Flask, session, request, redirect, render_template
+from flask import Flask, session, request, redirect, render_template, jsonify
 from flaskext.sqlalchemy import SQLAlchemy
 
 from models import app, db, Fbuser, Task, Comment
@@ -161,11 +161,13 @@ def get_fully_qualified_path(short_path='/'):
 
 @app.route('/typeahead/json/', methods=['GET'])
 def typeahead():
-    if 'access_token' in session and int(session['expires']) <= time.time():
-        user_friends = fb_call('me/friends', session['access_token'])['data']
-        return flask.jsonify(user_friends)
+    if 'access_token' in session and int(session['expires']) >= time.time():
+        user_friends = fb_call('me/friends',
+                               args={'access_token':
+                                     session['access_token']})
+        return jsonify(user_friends)
     else:
-        return flask.jsonify({})
+        return jsonify({})
 
 @app.route('/close/', methods=['GET', 'POST'])
 def close():

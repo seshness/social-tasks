@@ -64,7 +64,7 @@ class ensure_fb_auth:
                 user = Fbuser(user_id)
                 db.session.add(user)
                 db.session.commit()
-            return self.func(*args)
+            return self.func(**args)
 
 def get_permalink_path(path):
     '''
@@ -230,12 +230,13 @@ def parse_message_content(content, assigner):
     assignee.remove(assigner)
     return assignee
 
-@app.route('/task/<id>/', methods=['GET'])
+@app.route('/task/<t_id>/', methods=['GET'])
 @ensure_fb_auth
-def view_task(id):
-    print request.path
+def view_task(t_id):
+    print "this is id: " + t_id
+    task = Task.query.filter_by(task_id = t_id).first()
     me = get_me()
-    return render_template('view_task.html', me=me)
+    return render_template('view_task.html', me=me, task=task)
 
 @app.route('/ajax/home/', methods=['GET'])
 @ensure_fb_auth

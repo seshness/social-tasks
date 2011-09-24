@@ -10,7 +10,7 @@ import datetime
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
-from models import app, db, Fbuser, Task
+from models import app, db, Fbuser, Task, Comment
 import decorators
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
@@ -247,6 +247,28 @@ def fbuser_from_name(name):
 
     return None
 
+@app.route('/task/comment/', methods=['POST'])
+@ensure_fb_auth
+def make_comment(content=None):
+    from sqlalchemy import func
+    comment_id = len(Comment.query.all())+1
+    access_token = session['access_token']
+    contents = request.form['content']
+    if access_token:
+        me = fb_call('me', args={'access_token': access_token})
+        author = me['id']
+        creation_time = datetime.datetime.today()
+        task_id = request.form['task_id']
+        
+        comment = Comment(comment_id, task_id, datetime.datetime.today(), author, contents)
+        db.session.add(comment)
+        db.session.commit()
+
+        to_return = '<div class="well"> <div class="clearfix"> <img src="https://graph.facebook.com/' + author + '/picture" class="small-picture"> <strong>' + str(me['name']) + ' says...</strong> </div> <div>' + contents + '</div> <br><br> <small>posted at ' + str(creation_time) + '</small> </div>'
+        return to_return
+    raise Exception
+    
+    
 @app.route('/task/<t_id>/', methods=['GET'])
 @ensure_fb_auth
 def view_task(t_id):

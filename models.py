@@ -10,18 +10,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://socialtasks:alert
 db = SQLAlchemy(app)
 
 assignee_tasks = db.Table('assignee_tasks',
-                      db.Column('task_id', db.Integer,
-                                db.ForeignKey('task.task_id')),
-                      db.Column('facebook_id', db.String(20),
-                                db.ForeignKey('fbuser.facebook_id'))
-                      )
+                          db.Column('task_id', db.Integer,
+                                    db.ForeignKey('task.task_id')),
+                          db.Column('facebook_id', db.String(20),
+                                    db.ForeignKey('fbuser.facebook_id'))
+                          )
 
 hidefrom_tasks = db.Table('hidefrom_tasks',
-                      db.Column('task_id', db.Integer,
-                                db.ForeignKey('task.task_id')),
-                      db.Column('facebook_id', db.String(20),
-                                db.ForeignKey('fbuser.facebook_id'))
-                      )
+                          db.Column('task_id', db.Integer,
+                                    db.ForeignKey('task.task_id')),
+                          db.Column('facebook_id', db.String(20),
+                                    db.ForeignKey('fbuser.facebook_id'))
+                          )
 
 class Task(db.Model):
     task_id = db.Column(db.Integer, primary_key=True)

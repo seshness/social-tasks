@@ -30,7 +30,7 @@
     <![endif]-->
   </head>
   <body>
-    
+
     <div class="topbar">
       <div class="fill">
         <div class="container">
@@ -39,10 +39,10 @@
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
           </ul>
-	  <p class="pull-right">
-	    <img src="https://graph.facebook.com/{{me.id}}/picture" alt="{{me.name}}" class="small-picture">
-	    {{me.name}}
-	  </p>
+      <p class="pull-right">
+        <img src="https://graph.facebook.com/{{me.id}}/picture" alt="{{me.name}}" class="small-picture">
+        {{me.name}}
+      </p>
         </div>
       </div>
     </div>
@@ -50,12 +50,13 @@
     <div id="main_content" class="container">
 
       <!-- insert content here -->
+      {{content|safe}}
 
       <footer>
         <p>&copy; 2011</p>
       </footer>
 
     </div> <!-- /container -->
-    
+
   </body>
 </html>

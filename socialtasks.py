@@ -12,6 +12,7 @@ from flaskext.sqlalchemy import SQLAlchemy
 from flaskext.cache import Cache
 
 from models import app, db, Fbuser, Task
+import decorators
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
@@ -19,6 +20,7 @@ Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
 app = Flask(__name__)
 cache = Cache(app)
 
+@decorators.memoized
 def get_me():
     return fb_call('me', args={'access_token': session['access_token']})
 
@@ -236,6 +238,7 @@ def parse_message_content(content, assigner):
 @ensure_fb_auth
 def view_task(id):
     me = get_me()
+
     return render_template('view_task.html', me=me)
 
 @app.route('/ajax/home/', methods=['GET'])

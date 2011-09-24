@@ -48,6 +48,7 @@ class ensure_fb_auth:
             return redirect(oauth_login_url(
                     get_permalink_path(request.path)))
         else:
+	    
             return self.func(*args)
 
 def get_permalink_path(path):
@@ -145,6 +146,10 @@ def get_fully_qualified_path(short_path):
 def close():
     return render_template('close.html')
 
+
+def get_me():
+    return fb_call('me', args={'access_token': session['access_token']})
+
 @app.route('/', methods=['GET', 'POST'])
 @ensure_fb_auth
 def root(content=None):
@@ -152,7 +157,7 @@ def root(content=None):
     if access_token:
         if not content:
             content = home()
-        me = fb_call('me', args={'access_token': access_token})
+        me = get_me()
         app_friends = fql(
             "SELECT uid, name, is_app_user, pic_square "
             "FROM user "

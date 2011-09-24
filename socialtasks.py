@@ -246,7 +246,7 @@ def make_comment(content=None):
         db.session.add(comment)
         db.session.commit()
 
-        to_return = '<div class="well"> <div class="clearfix"> <img src="https://graph.facebook.com/' + author + '/picture" class="small-picture"> <strong>' + str(me['name']) + ' says...</strong> </div> <div>' + contents + '</div> <br><br> <small>posted at ' + creation_time + '</small> </div>'
+        to_return = '<div class="well"> <div class="clearfix"> <img src="https://graph.facebook.com/' + author + '/picture" class="small-picture"> <strong>' + str(me['name']) + ' says...</strong> </div> <div>' + contents + '</div> <br><br> <small>posted at ' + str(creation_time) + '</small> </div>'
         return to_return
     raise Exception
     
@@ -259,7 +259,7 @@ def view_task(t_id):
     task = Task.query.filter_by(task_id = t_id).first()
     for comment in task.comments:
        author = fb_call(comment.author, args={'access_token': session['access_token']})
-       author_name = author.name
+       author_name = author['name']
        c_dict = {'author': comment.author, 'contents': comment.contents, 'creation_time': comment.creation_time, 'author_name': author_name}
        comments.append(c_dict)
     me = get_me()

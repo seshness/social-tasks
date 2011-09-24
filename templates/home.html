@@ -10,7 +10,7 @@
 	    <thead>
 	      <tr>
 	        <th>Task</th>
-	        <th>Assigned to</th>
+	        <th class="pictures">Assigned to</th>
 		</thead>
 		<tbody>
             {% for task in user_assigned %}
@@ -18,7 +18,7 @@
                 <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
                 <td class="pictures">
 				  <a href="http://www.facebook.com/{{task.assigner_id}}">
-				    <img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
+				<img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
 				  </a>
 				</td>
             </tr>
@@ -30,13 +30,13 @@
 	    <thead>
 	      <tr>
 	        <th>Task</th>
-	        <th>Requested by</th>
+	        <th class="pictures">Requested by</th>
 		</thead>
 		<tbody>
             {% for task in assigned_to_user %}
 	        <tr>
                 <td><a class="task_entry" id="1">{{task.task_name}}</a></td>
-                <td class="pictures">
+                <td>
 				  <a href="http://www.facebook.com/{{task.assigner_id}}">
 				    <img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
 			      </a>
@@ -47,6 +47,7 @@
       </table>
     </div>
     <div class="span4">
+	  <br><br>
       <a id="create_task" class="btn primary large">Create Task &raquo;</a>
     </div>
   </div>

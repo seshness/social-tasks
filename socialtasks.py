@@ -12,6 +12,7 @@ from flaskext.sqlalchemy import SQLAlchemy
 from flaskext.cache import Cache
 
 from models import app, db, Fbuser, Task
+import decorators
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
@@ -19,6 +20,7 @@ Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
 app = Flask(__name__)
 cache = Cache(app)
 
+@decorators.memoized
 def get_me():
     return fb_call('me', args={'access_token': session['access_token']})
 
@@ -45,19 +47,20 @@ class ensure_fb_auth:
 
     def __call__(self, **args):
         access_token, expires = None, None
-        if 'access_token' in session and 'expires' in session:
+        if ('access_token' in session and 'expires' in session) and \
+                int(session['expires']) > time.time():
             access_token = session['access_token']
-            expires = session['expires']
+            expires = int(session['expires'])
         elif request.args.get('code', None):
             auth_response = fbapi_auth(request.args.get('code'))
-            session['access_token'], session['expires'] = \
-                access_token, expires = auth_response
+            session['access_token'] = access_token = auth_response[0]
+            session['expires'] = expires = int(auth_response[1])
 
         if not access_token or expires <= time.time():
             return redirect(oauth_login_url(
                     get_permalink_path(request.path)))
         else:
-	    me = get_me()
+            me = get_me()
             user_id = str(me['id'])
             user = Fbuser.query.filter_by(facebook_id=user_id).first()
             if not user:
@@ -117,7 +120,8 @@ def fbapi_auth(code):
     for pair in pairs:
         (key, value) = pair.split("=")
         result_dict[key] = value
-    return (result_dict["access_token"], result_dict["expires"])
+    return (result_dict["access_token"],
+            time.time() + int(result_dict["expires"]))
 
 def fbapi_get_application_access_token(id):
     token = fbapi_get_string(
@@ -222,7 +226,7 @@ def make_task(content=None):
 def parse_message_content(content, assigner):
     words = content.split(' ')
     assignee = set(assigner)
-    
+
     for word in len(words):
         if (word[0] == '@'):
             assignee.add[word[1:]]
@@ -264,9 +268,9 @@ def home():
             assigned_to_user.append(task)
     print "here are the tasks assigned to the user"
     for task in assigned_to_user:
-      print task.contents   
-    
-    #if you are assignee, assigner list of task contents, list of fb_id of everyone assigned. 
+      print task.contents
+
+    #if you are assignee, assigner list of task contents, list of fb_id of everyone assigned.
 
     return render_template('home.html', me=me, app=app, likes=likes,
                            friends=friends, photos=photos, user_assigned=user_assigned_tasks, assigned_to_user=assigned_to_user)

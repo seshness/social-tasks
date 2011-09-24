@@ -9,6 +9,6 @@ $(function () {
   $('a.task_entry').click(function (event) {
     event.preventDefault();
     alert(event.target.id);
-    $('#main_content').load('task/'+event.target.id);
+    $('#main_content').load('task/'+event.target.id+'/');
   });
 });

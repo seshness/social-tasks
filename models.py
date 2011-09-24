@@ -31,7 +31,7 @@ class Task(db.Model):
     done = db.Column(db.Boolean)
     task_name = db.Column(db.Text)
     contents = db.Column(db.Text)
-    comments = db.relationship('Comments', backref='task', lazy='dynamic')
+    comments = db.relationship('Comment', backref='task', lazy='dynamic')
 
     def __init__(self, task_id, creation_time, assigner_id, contents):
         self.task_id = task_id
@@ -39,7 +39,7 @@ class Task(db.Model):
         self.assigner_id = assigner_id
         self.contents = contents
 
-class Comments(db.Model):
+class Comment(db.Model):
     comment_id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(db.Integer, db.ForeignKey('task.task_id'))
     creation_time = db.Column(db.DateTime)

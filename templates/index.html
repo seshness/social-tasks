@@ -37,6 +37,10 @@
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
           </ul>
+		  <div class="pull-right">
+			<img src="https://graph.facebook.com/{{me.id}}/picture" alt="{{me.name}}">
+			{{me.name}}
+		  </div>
         </div>
       </div>
     </div>
@@ -50,6 +54,24 @@
         <div class="row">
           <div class="span10">
             <h2>Tasks!</h2>
+			<table class="zebra-striped">
+			  <thead>
+			    <tr>
+				  <th>Task</th>
+				  <th>Requested by</th>
+				</tr>
+			  </thead>
+			  <tbody>
+				<tr>
+				  <td>Test task</td>
+				  <td><img src="https://graph.facebook.com/{{me.id}}/picture" alt="{{me.name}}"></td>
+				</tr>
+				<tr>
+				  <td>Test task 2</td>
+				  <td><img src="https://graph.facebook.com/{{me.id}}/picture" alt="{{me.name}}"></td>
+				</tr>
+			  </tbody>
+			</table>
           </div>
           <div class="span4">
             <h3>Sidebar</h3>

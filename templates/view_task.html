@@ -2,34 +2,34 @@
 <div class="content">
   <div class="page-header">
     <h1>
-	  {{task.task_name}}
-	  <div class="pull-right">
+      {{task.task_name}}
+      <div class="pull-right">
         <a id="delete" class="btn danger">Untag me</a>
         <a id="done" class="btn success">Done!</a>
-      </div>  
-	</h1>
+      </div>
+    </h1>
   </div>
   <div class="well">
     {{task.contents}}
   </div>
   <div id="comments">
     <h3>Comments</h3>
-	{% for comment in comments %}
+    {% for comment in comments %}
       <div class="well">
-	    <div class="clearfix">
-	      <img src="https://graph.facebook.com/{{comment.author}}/picture" class="small-picture">
-		  <strong>{{comment['author_name']}} says...</strong>
-	    </div>
-		<br>
-		<blockquote>
-	      <p>
-	        {{comment['contents']}}
-	      </p>
-		  <br>
-		  <small>posted at {{comment['creation_time']}}</small>
-		</blockquote>
-	  </div>
-	{% endfor %}
+        <div class="clearfix">
+          <img src="https://graph.facebook.com/{{comment.author}}/picture" class="small-picture">
+          <strong>{{comment['author_name']}} says...</strong>
+        </div>
+        <br>
+        <blockquote>
+          <p>
+            {{comment['contents']}}
+          </p>
+          <br>
+          <small>posted at {{comment['creation_time']}}</small>
+        </blockquote>
+      </div>
+    {% endfor %}
   </div>
   <form id="create_comment" class="form-stacked">
     <label for="comment_text">

@@ -254,7 +254,7 @@ def fbuser_from_name(name):
     for user in app_friends:
         name_compressed = re.sub('\s', '', user['name']).lower()
         if name_compressed == name:
-            return Fbuser.query.filter_by(facebook_id= str(user['uid'])).first_or_404()
+            return Fbuser.query.filter_by(facebook_id=str(user['uid'])).first_or_404()
 
     return None
 
@@ -271,12 +271,18 @@ def make_comment(content=None):
         creation_time = datetime.datetime.today()
         task_id = request.form['task_id']
 
-        comment = Comment(comment_id, task_id, datetime.datetime.today(), author, contents)
+        comment = Comment(comment_id,
+                          task_id,
+                          datetime.datetime.today(),
+                          author,
+                          contents)
         db.session.add(comment)
         db.session.commit()
 
-        to_return = '<div class="well"> <div class="clearfix"> <img src="https://graph.facebook.com/' + author + '/picture" class="small-picture"> <strong>' + str(me['name']) + ' says...</strong> </div> <br> <blockquote> <p>' + contents + '</p> <br> <small>posted at ' + str(creation_time) + '</small> </blockquote> </div>'
-        return to_return
+        return render_template('make_comment.html',
+                               me=me,
+                               contents=contents,
+                               creation_time=creation_time)
     raise Exception
 
 
@@ -287,12 +293,19 @@ def view_task(t_id):
     task = Task.query.filter_by(task_id = t_id).first_or_404()
     comments = []
     for comment in task.comments:
-       author = fb_call(comment.author, args={'access_token': session['access_token']})
-       author_name = author['name']
-       c_dict = {'author': comment.author, 'contents': comment.contents, 'creation_time': comment.creation_time, 'author_name': author_name}
-       comments.append(c_dict)
+        author = fb_call(comment.author,
+                         args={'access_token': session['access_token']})
+        author_name = author['name']
+        c_dict = {'author': comment.author,
+                  'contents': comment.contents,
+                  'creation_time': comment.creation_time,
+                  'author_name': author_name}
+        comments.append(c_dict)
     me = get_me()
-    return render_template('view_task.html', me=me, task=task, comments=comments)
+    return render_template('view_task.html',
+                           me=me,
+                           task=task,
+                           comments=comments)
 
 @app.route('/ajax/home/', methods=['GET'])
 @ensure_fb_auth
@@ -300,12 +313,8 @@ def home():
     access_token = session['access_token']
     me = fb_call('me', args={'access_token': access_token})
     app = fb_call(FBAPI_APP_ID, args={'access_token': access_token})
-    likes = fb_call('me/likes',
-                    args={'access_token': access_token, 'limit': 4})
     friends = fb_call('me/friends',
                       args={'access_token': access_token, 'limit': 4})
-    photos = fb_call('me/photos',
-                     args={'access_token': access_token, 'limit': 16})
 
     user_id = str(me['id'])
     user = Fbuser.query.filter_by(facebook_id=user_id).first()
@@ -322,10 +331,13 @@ def home():
     for task in assigned_to_user:
       print task.contents
 
-    #if you are assignee, assigner list of task contents, list of fb_id of everyone assigned.
+    #if you are assignee, assigner list of task contents, list of fb_id of
+    #everyone assigned.
 
-    return render_template('home.html', me=me, app=app, likes=likes,
-                           friends=friends, photos=photos, user_assigned=user_assigned_tasks, assigned_to_user=assigned_to_user)
+    return render_template('home.html', me=me, app=app,
+                           friends=friends,
+                           user_assigned=user_assigned_tasks,
+                           assigned_to_user=assigned_to_user)
 
 @app.route('/permalink/<path:ajax_path>')
 def permalink(ajax_path):

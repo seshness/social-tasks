@@ -1,3 +1,3 @@
 $(function () {
-    $('div#main_content').load('/ajax/home');
+    $('#main_content').load('/ajax/home');
 });

@@ -220,13 +220,11 @@ def make_task(content=None):
 
 def parse_message_content(content, assigner):
     words = content.split(' ')
-    assignee = set(assigner)
+    assignee = set([])
 
-    for word in len(words):
-        if (word[0] == '@'):
-            assignee.add[word[1:]]
-
-    assignee.remove(assigner)
+    for i in len(words):
+        if (words[i] == '@'):
+            assignee.add[words[i][1:]]
     return assignee
 
 @app.route('/task/comment/', methods=['POST'])

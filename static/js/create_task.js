@@ -2,7 +2,7 @@ $(function () {
   $('#create_form').submit(function (event) {
     event.preventDefault();
 	alert('sending ajax post');
-	.ajax({
+	$.ajax({
 	  type: 'POST',
 	  url: '/task/make/',
 	  data: {'content': $('#task_text').val()},
@@ -14,5 +14,4 @@ $(function () {
 	  }
 	});
   });
-  alert($('create_form'));
 });

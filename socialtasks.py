@@ -35,7 +35,7 @@ class ensure_fb_auth:
         self.__name__ = func.__name__
         self.__doc__ = func.__doc__
     def __call__(self, *args):
-        access_token,expires = None, None
+        access_token, expires = None, None
         if 'access_token' in session and 'expires' in session:
             access_token = session['access_token']
             expires = session['expires']
@@ -174,6 +174,21 @@ def root(content=None):
 @ensure_fb_auth
 def create_task():
     return render_template('create_task.html')
+
+
+@app.route('/task/make/', methods=['POST'])
+@ensure_fb_auth
+def make_task(content=None):
+    print "hi!!!!!"
+    from sqlalchemy import func
+    size = db.session.query(func.count(Task.task_id))
+    access_token = session['access_token']
+    content = session['content']
+    if access_token:
+        me = fb_call('me', args={'access_token': access_token})
+        task = create_task(size, datetime.today(), me.id, content)
+        db.session.add(task)
+        db.session.commit()
 
 @app.route('/task/<id>/', methods=['GET'])
 @ensure_fb_auth

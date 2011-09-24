@@ -174,11 +174,6 @@ def root(content=None):
         if not content:
             content = home()
         me = get_me()
-        app_friends = fql(
-            "SELECT uid, name, is_app_user, pic_square "
-            "FROM user "
-            "WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND "
-            "  is_app_user = 1", access_token)
 
         return render_template(
             'index.html',
@@ -207,13 +202,14 @@ def make_task(content=None):
         user_id = me['id']
         user = Fbuser.query.filter_by(facebook_id=user_id).first()
         task = Task(size, datetime.datetime.today(), str(me['id']), request.form['title'], content, False)
-	#TODO: add assignee
+
+        assignees = parse_message_content(content, str(me['name']))
+        for assignee_name in assignees:
+            task.add_assignee(fbuser_from_name(assignee_name))
+
         db.session.add(task)
         db.session.commit()
 
-        assignees = parse_message_content(content, str(me['name']))
-        for i in len(assignees):
-            task.add_assignee(i)
         return "Success"
 
     raise Exception
@@ -222,10 +218,34 @@ def parse_message_content(content, assigner):
     words = content.split(' ')
     assignee = set([])
 
-    for i in len(words):
-        if (words[i] == '@'):
-            assignee.add[words[i][1:]]
+    for word in words:
+        if word[0] == '@':
+            assignee.add(word[1:])
+
     return assignee
+
+def fbuser_from_name(name):
+    import re
+
+    name = name.lower()
+
+    me = get_me()
+    myname = re.sub('\s', '', me['name']).lower()
+    if name == myname:
+        return Fbuser.query.filter_by(facebook_id= str(me['id'])).first_or_404()
+
+    app_friends = fql(
+        "SELECT uid, name "
+        "FROM user "
+        "WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())"
+        , session['access_token'])
+
+    for user in app_friends:
+        name_compressed = re.sub('\s', '', user['name']).lower()
+        if name_compressed == name:
+            return Fbuser.query.filter_by(facebook_id= str(user['uid'])).first_or_404()
+
+    return None
 
 @app.route('/task/comment/', methods=['POST'])
 @ensure_fb_auth
@@ -253,8 +273,8 @@ def make_comment(content=None):
 @ensure_fb_auth
 def view_task(t_id):
     print "this is id: " + t_id
+    task = Task.query.filter_by(task_id = t_id).first_or_404()
     comments = []
-    task = Task.query.filter_by(task_id = t_id).first()
     for comment in task.comments:
        author = fb_call(comment.author, args={'access_token': session['access_token']})
        author_name = author['name']

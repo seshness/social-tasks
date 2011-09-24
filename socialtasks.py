@@ -45,11 +45,9 @@ class ensure_fb_auth:
                 access_token, expires = auth_response
 
         if not access_token or expires <= time.time():
-            print 'QWERTYUIOP'
             return redirect(oauth_login_url(
                     get_permalink_path(request.path)))
         else:
-            print 'asdfghjkl'
             return self.func(*args)
 
 def get_permalink_path(path):

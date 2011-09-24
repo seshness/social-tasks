@@ -1,7 +1,7 @@
 import base64
 import os
 import os.path
-import simplejson as json
+import json
 import urllib
 import urllib2
 

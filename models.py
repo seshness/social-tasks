@@ -41,13 +41,13 @@ class Comments(db.Model):
 
 class User(db.Model):
     facebook_id = db.Column(db.Integer, primary_key=True)
-    tasks       = db.relationship('Task', backref='assigner', lazy='dynamic')
+    tasks = db.relationship('Task', backref='assigner', lazy='dynamic')
 
 
     def __init__(self, facebook_id):
         self.facebook_id = facebook_id
 
     def __repr__(self):
-        return '<User %r>' % __repr__(self.facebook_id)
+        return '<User %r>' % repr(self.facebook_id)
 
 

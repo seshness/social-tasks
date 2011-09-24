@@ -152,7 +152,9 @@ app.config.from_object('conf.Config')
 def get_home():
     return get_fully_qualified_path('/')
 
-def get_fully_qualified_path(short_path):
+def get_fully_qualified_path(short_path='/'):
+    if len(short_path) == 0: short_path = '/'
+    if short_path[-1] != '/': short_path += '/'
     if request.host.find('localhost') != -1:
         return 'http://' + request.host + short_path
     else:

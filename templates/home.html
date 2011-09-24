@@ -15,7 +15,7 @@
 		<tbody>
             {% for task in user_assigned %}
 	        <tr>
-                <td><a class="task_entry" id="1">Task {{task.task_id}}</a></td>
+                <td><a class="task_entry" id="1">Task {{task.task_name}}</a></td>
                 <td><img src="https://graph.facebook.com/{{task.assigner_id}}/picture" alt="{{me.name}}" class="small-picture"></td>
             </tr>
             {% endfor %}

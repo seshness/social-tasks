@@ -41,12 +41,13 @@ class Task(db.Model):
     comments = db.relationship('Comment', backref='task',
                                lazy='dynamic')
 
-    def __init__(self, task_id, creation_time, assigner_id,
+    def __init__(self, task_id, creation_time, assigner_id, task_name,
                  contents):
         self.task_id = task_id
         self.creation_time = creation_time
         self.assigner_id = assigner_id
         self.contents = contents
+	self.task_name = task_name
 
     def add_assignee(self, assignee):
         self.assignees.append(assignee)

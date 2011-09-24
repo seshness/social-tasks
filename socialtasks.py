@@ -9,11 +9,15 @@ import datetime
 
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
+from flaskext.cache import Cache
 
 from models import app, db, Fbuser, Task
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
+
+app = Flask(__name__)
+cache = Cache(app)
 
 def get_me():
     return fb_call('me', args={'access_token': session['access_token']})
@@ -53,15 +57,14 @@ class ensure_fb_auth:
             return redirect(oauth_login_url(
                     get_permalink_path(request.path)))
         else:
-	    me = get_me()
-	    user_id = str(me['id'])
-    	    all_users = Fbuser.query.all()
-    	    user = Fbuser.query.filter_by(facebook_id=user_id).first()
-    	    if not user:
-	      user = Fbuser(user_id)
-              db.session.add(user)
-              db.session.commit()
-            print "yay"
+            me = get_me()
+            user_id = str(me['id'])
+            all_users = Fbuser.query.all()
+            user = Fbuser.query.filter_by(facebook_id=user_id).first()
+            if not user:
+                user = Fbuser(user_id)
+                db.session.add(user)
+                db.session.commit()
             return self.func(*args)
 
 def get_permalink_path(path):
@@ -129,6 +132,7 @@ def fbapi_get_application_access_token(id):
         print 'Token mismatch: %s not in %s' % (id, token)
     return token
 
+@cache.memoize(50)
 def fql(fql, token, args=None):
     if not args:
         args = {}
@@ -138,6 +142,7 @@ def fql(fql, token, args=None):
         urllib2.urlopen("https://api.facebook.com/method/fql.query?" +
                         urllib.urlencode(args)).read())
 
+@cache.memoize(50)
 def fb_call(call, args=None):
     return json.loads(urllib2.urlopen("https://graph.facebook.com/" + call +
                                       '?' + urllib.urlencode(args)).read())
@@ -182,7 +187,6 @@ def root(content=None):
             token=access_token,
             content=content)
     else:
-        print oauth_login_url(next_url=get_home())
         return redirect(oauth_login_url(next_url=get_home()))
 
 @app.route('/task/create/', methods=['GET', 'POST'])
@@ -194,7 +198,6 @@ def create_task():
 @ensure_fb_auth
 def make_task(content=None):
     from sqlalchemy import func
-    #size = db.session.query(func.count(Task.task_id))
     size = len(Task.query.all())+1
     access_token = session['access_token']
     content = request.form['content']

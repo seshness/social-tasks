@@ -38,7 +38,7 @@ class ensure_fb_auth:
         self.__name__ = func.__name__
         self.__doc__ = func.__doc__
     def __call__(self, *args):
-        access_token,expires = None, None
+        access_token, expires = None, None
         if 'access_token' in session and 'expires' in session:
             access_token = session['access_token']
             expires = session['expires']
@@ -202,8 +202,6 @@ def make_task(content=None):
         task = create_task(size, datetime.today(), me.id, content)
         db.session.add(task)
         db.session.commit()
-
-                        
 
 @app.route('/task/<id>/', methods=['GET'])
 @ensure_fb_auth

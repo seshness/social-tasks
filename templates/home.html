@@ -11,17 +11,18 @@
 	  <tr>
 	    <th>Task</th>
 	    <th class="pictures">Assigned to</th>
+	  </tr>
 	</thead>
 	<tbody>
           {% for task in user_assigned %}
 	  <tr>
-            <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
-            <td class="pictures" width="100">
+        <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
+        <td class="pictures">
 	      <a href="http://www.facebook.com/{{task.assigner_id}}">
-		<img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
+		    <img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
 	      </a>
 	    </td>
-          </tr>
+      </tr>
           {% endfor %}
 	</tbody>
       </table>
@@ -31,17 +32,18 @@
 	  <tr>
 	    <th>Task</th>
 	    <th class="pictures">Requested by</th>
+	  </tr>
 	</thead>
 	<tbody>
           {% for task in assigned_to_user %}
 	  <tr>
-            <td><a class="task_entry" id="1">{{task.task_name}}</a></td>
-            <td width="100">
+        <td><a class="task_entry" id="1">{{task.task_name}}</a></td>
+        <td>
 	      <a href="http://www.facebook.com/{{task.assigner_id}}">
-		<img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
+		    <img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
 	      </a>
 	    </td>
-          </tr>
+      </tr>
           {% endfor %}
 	</tbody>
       </table>

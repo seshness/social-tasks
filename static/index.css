@@ -86,6 +86,6 @@ label, textarea, input {
   color: #ddd;
 }
 
-table th.pictures {
-  width: 100;
+table thead th.pictures {
+  width: 25%;
 }

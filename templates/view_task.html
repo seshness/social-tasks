@@ -20,11 +20,14 @@
 	      <img src="https://graph.facebook.com/{{comment.author}}/picture" class="small-picture">
 		  <strong>{{comment['author_name']}} says...</strong>
 	    </div>
-	    <div>
-	      {{comment['contents']}}
-	    </div>
-		<br><br>
-		<small>posted at {{comment['creation_time']}}</small>
+		<br>
+		<blockquote>
+	      <p>
+	        {{comment['contents']}}
+	      </p>
+		  <br>
+		  <small>posted at {{comment['creation_time']}}</small>
+		</blockquote>
 	  </div>
 	{% endfor %}
   </div>

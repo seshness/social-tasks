@@ -211,9 +211,13 @@ def make_task(content=None):
         task = Task(size, datetime.datetime.today(), str(me['id']), request.form['title'], content, False)
 
         assignees = parse_message_content(content, str(me['name']))
+
+        if len(assignees) == 0:
+            assignees = [str(me['name'])]
+
         for assignee_name in assignees:
             task.add_assignee(fbuser_from_name(assignee_name))
-
+            
         db.session.add(task)
         db.session.commit()
 

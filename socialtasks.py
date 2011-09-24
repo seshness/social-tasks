@@ -8,6 +8,8 @@ import urllib2
 from flask import Flask, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
+from models import app, db
+
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 
 
@@ -93,9 +95,7 @@ def fb_call(call, args=None):
     return json.loads(urllib2.urlopen("https://graph.facebook.com/" + call +
                                       '?' + urllib.urlencode(args)).read())
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://socialtasks:alert48:pees@ec2-75-101-240-217.compute-1.amazonaws.com/socialtasks'
-db = SQLAlchemy(app)
+
 app.config.from_object(__name__)
 app.config.from_object('conf.Config')
 

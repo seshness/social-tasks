@@ -18,6 +18,8 @@
     <meta content="" property="og:image" />
     <meta content="" property="og:site_name" />
     <meta content="{{appId}}" property="fb:app_id" />
+	<script type="text/javascript" src="static/js/jquery-1.6.4.min.js"></script>
+    <script type="text/javascript" src="static/js/index.js"></script>
     <script type="text/javascript">function popup(pageURL, title,w,h) { var left = (screen.width/2)-(w/2); var top = (screen.height/2)-(h/2); var targetWin = window.open( pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left ); }</script>
     <!--[if IE]>
       <script>
@@ -37,48 +39,17 @@
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
           </ul>
-		  <div class="nav pull-right">
+		  <p class="pull-right">
 			<img src="https://graph.facebook.com/{{me.id}}/picture" alt="{{me.name}}" class="small-picture">
 			{{me.name}}
-		  </div>
+		  </p>
         </div>
       </div>
     </div>
 
-    <div class="container">
+    <div id="main_content" class="container">
 
-      <div class="content">
-        <div class="page-header">
-          <h1><strong>{{me.name}}</strong>'s Tasks</h1>
-        </div>
-        <div class="row">
-          <div class="span10">
-            <h2>Tasks!</h2>
-			<table class="zebra-striped">
-			  <thead>
-			    <tr>
-				  <th>Task</th>
-				  <th>Requested by</th>
-				</tr>
-			  </thead>
-			  <tbody>
-				<tr>
-				  <td>Test task</td>
-				  <td><img src="https://graph.facebook.com/{{me.id}}/picture" alt="{{me.name}}" class="small-picture"></td>
-				</tr>
-				<tr>
-				  <td>Test task 2</td>
-				  <td><img src="https://graph.facebook.com/{{me.id}}/picture" alt="{{me.name}}" class="small-picture"></td>
-				</tr>
-			  </tbody>
-			</table>
-          </div>
-          <div class="span4">
-            <h3>Sidebar</h3>
-			<a id="create_task" class="btn primary large">Create Task &raquo;</a>
-          </div>
-        </div>
-      </div>
+      <!-- insert content here -->
 
       <footer>
         <p>&copy; 2011</p>

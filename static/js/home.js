@@ -8,7 +8,7 @@ $(function () {
 
   $('a.task_entry').click(function (event) {
     event.preventDefault();
-    alert($(this).id);
-    $('#main_content').load('task/'+$(this).id+'/');
+    alert(event.target.id);
+    $('#main_content').load('task/'+event.target.id+'/');
   });
 });

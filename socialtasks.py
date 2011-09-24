@@ -9,7 +9,7 @@ import time
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
-from models import app, db, Fbuser
+from models import app, db, Fbuser, Task
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
@@ -53,7 +53,6 @@ class ensure_fb_auth:
         else:
 	    me = get_me()
 	    user_id = str(me['id'])
-    	    all_users = Fbuser.query.all()
     	    user = Fbuser.query.filter_by(facebook_id=user_id).first()
     	    if not user:
 	      user = Fbuser(user_id)
@@ -222,8 +221,25 @@ def home():
     photos = fb_call('me/photos',
                      args={'access_token': access_token, 'limit': 16})
 
+    user_id = str(me['id'])
+    user = Fbuser.query.filter_by(facebook_id=user_id).first()
+    user_assigned_tasks = user.tasks
+    for task in user_assigned_tasks:
+      print task.contents
+    assigned_to_user = []
+    all_tasks = Task.query.all()
+    for task in all_tasks:
+       for assignee in task.assignees:
+          if assignee.facebook_id == user_id:
+            assigned_to_user.append(task)
+    print "here are the tasks assigned to the user"
+    for task in assigned_to_user:
+      print task.contents   
+    
+    #if you are assignee, assigner list of task contents, list of fb_id of everyone assigned. 
+
     return render_template('home.html', me=me, app=app, likes=likes,
-                           friends=friends, photos=photos)
+                           friends=friends, photos=photos, user_assigned=user_assigned_tasks, assigned_to_user=assigned_to_user)
 
 @app.route('/permalink/<path:ajax_path>')
 def permalink(ajax_path):

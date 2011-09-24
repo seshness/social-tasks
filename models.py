@@ -12,14 +12,14 @@ db = SQLAlchemy(app)
 assignee_tasks = db.Table('assignee_tasks',
                       db.Column('task_id', db.Integer,
                                 db.ForeignKey('task.task_id')),
-                      db.Column('facebook_id', db.Integer,
+                      db.Column('facebook_id', db.String(20),
                                 db.ForeignKey('fbuser.facebook_id'))
                       )
 
 hidefrom_tasks = db.Table('hidefrom_tasks',
                       db.Column('task_id', db.Integer,
                                 db.ForeignKey('task.task_id')),
-                      db.Column('facebook_id', db.Integer,
+                      db.Column('facebook_id', db.String(20),
                                 db.ForeignKey('fbuser.facebook_id'))
                       )
 
@@ -34,7 +34,7 @@ class Task(db.Model):
                                 backref=db.backref('hiddefrom_task',
                                                    lazy='dynamic'))
 
-    assigner_id = db.Column(db.Integer, db.ForeignKey('fbuser.facebook_id'))
+    assigner_id = db.Column(db.String(20), db.ForeignKey('fbuser.facebook_id'))
     done = db.Column(db.Boolean)
     task_name = db.Column(db.Text)
     contents = db.Column(db.Text)
@@ -48,11 +48,16 @@ class Task(db.Model):
         self.assigner_id = assigner_id
         self.contents = contents
 
+    def add_assignee(self, assignee):
+        self.assignees.append(assignee)
+	db.session.commit()
+	print self.assignees
+
 class Comment(db.Model):
     comment_id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(db.Integer, db.ForeignKey('task.task_id'))
     creation_time = db.Column(db.DateTime)
-    author = db.Column(db.Integer, db.ForeignKey('fbuser.facebook_id'))
+    author = db.Column(db.String(20), db.ForeignKey('fbuser.facebook_id'))
     contents = db.Column(db.Text)
 
     def __init__(self, comment_id, task_id, creation_time,
@@ -73,5 +78,11 @@ class Fbuser(db.Model):
 
     def __repr__(self):
         return '<FbUser %r>' % repr(self.facebook_id)
+
+    def add_task(self, task):
+        self.tasks.append(task)
+	db.session.commit()
+
+
 
 

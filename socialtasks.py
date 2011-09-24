@@ -24,13 +24,17 @@ def oauth_login_url(next_url=None):
         fb_login_uri += "&scope=%s" % ",".join(app.config['FBAPI_SCOPE'])
     return fb_login_uri
 
-def ensure_fb_auth(fn):
-    '''
-    Ensure that that user has a valid Facebook presence. If not, redirect the
-    user to the Facebook authentication page, while attempting to have them link
-    back to the current page.
-    '''
-    def do_real_auth(*args):
+class ensure_fb_auth:
+    def __init__(self, func):
+        '''
+        Ensure that that user has a valid Facebook presence. If not, redirect
+        the user to the Facebook authentication page, while attempting to have
+        them link back to the current page.
+        '''
+        self.func = func
+        self.__name__ = func.__name__
+        self.__doc__ = func.__doc__
+    def __call__(self, *args):
         access_token,expires = None, None
         if 'access_token' in session and 'expires' in session:
             access_token = session['access_token']
@@ -41,10 +45,12 @@ def ensure_fb_auth(fn):
                 access_token, expires = auth_response
 
         if not access_token or expires <= time.time():
-            return redirect(oauth_login_url(get_permalink_path(request.path)))
+            print 'QWERTYUIOP'
+            return redirect(oauth_login_url(
+                    get_permalink_path(request.path)))
         else:
-            return fn(*args)
-    return do_real_auth
+            print 'asdfghjkl'
+            return self.func(*args)
 
 def get_permalink_path(path):
     '''
@@ -144,6 +150,7 @@ def close():
 @app.route('/', methods=['GET', 'POST'])
 @ensure_fb_auth
 def root(content=None):
+    access_token = session['access_token']
     if access_token:
         if not content:
             content = home()
@@ -170,6 +177,12 @@ def root(content=None):
 def create_task():
     return render_template('create_task.html')
 
+@app.route('/task/<id>/', methods=['GET'])
+@ensure_fb_auth
+def view_task():
+    print request.path
+    return render_template('view_task.html')
+
 @app.route('/ajax/home/', methods=['GET'])
 @ensure_fb_auth
 def home():
@@ -185,11 +198,6 @@ def home():
 
     return render_template('home.html', me=me, app=app, likes=likes,
                            friends=friends, photos=photos)
-
-@app.route('/task/<id>/', methods=['GET'])
-@ensure_fb_auth
-def view_task():
-    render_template('view_task.html')
 
 @app.route('/permalink/<path:ajax_path>')
 def permalink(ajax_path):

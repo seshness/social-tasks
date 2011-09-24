@@ -242,7 +242,7 @@ def make_comment(content=None):
         creation_time = datetime.datetime.today()
         task_id = request.form['task_id']
         
-        comment = Comment(comment_id, datetime.datetime.today(), author, contents)
+        comment = Comment(comment_id, task_id, datetime.datetime.today(), author, contents)
         db.session.add(comment)
         db.session.commit()
 

@@ -254,13 +254,11 @@ def fbuser_from_name(name):
         "WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())"
         , session['access_token'])
 
-    print app_friends
     for user in app_friends:
         name_compressed = re.sub('\s', '', user['name']).lower()
         if name_compressed == name:
             return Fbuser.query.filter_by(facebook_id=str(user['uid'])).first_or_404()
 
-    print 'returning None for ' + name
     return None
 
 @app.route('/task/comment/', methods=['POST'])

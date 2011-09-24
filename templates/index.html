@@ -6,6 +6,7 @@
     <title>{{app.name}}</title>
     <link rel="stylesheet/less" href="static/less/bootstrap.less">
     <script src="static/js/less-1.1.3.min.js"></script>
+	<link rel="stylesheet/css" href="static/index.css">
     <!-- These are Open Graph tags.  They add meta data to your  -->
     <!-- site that facebook uses when your content is shared     -->
     <!-- over facebook.  You should fill these tags in with      -->
@@ -27,21 +28,43 @@
     <![endif]-->
   </head>
   <body>
-    <header class="clearfix">
-      <!-- By passing a valid access token here, we are able to display -->
-      <!-- the user's images without having to download or prepare -->
-      <!-- them ahead of time -->
-      <div>
-        <h1><strong>{{me.name}}</strong>'s Tasks</h1>
+	
+	<div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="#">Social Tasks</a>
+          <ul class="nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </div>
       </div>
-    </header>
-	<div class="container-fluid">
-	  <div class="content">
-	  TASKS!
-	  </div>
-	  <div class="sidebar">
-	  SIDEBAR!
-	  </div>
-	</div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+          <h1><strong>{{me.name}}</strong>'s Tasks</h1>
+        </div>
+        <div class="row">
+          <div class="span10">
+            <h2>Tasks!</h2>
+          </div>
+          <div class="span4">
+            <h3>Sidebar</h3>
+			<form action="">
+              <button class="btn" type="submit">Create</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>&copy; 2011</p>
+      </footer>
+
+    </div> <!-- /container -->
+	
   </body>
 </html>

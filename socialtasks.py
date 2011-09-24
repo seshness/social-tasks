@@ -150,6 +150,10 @@ def index():
 def close():
     return render_template('close.html')
 
+@app.route('/ajax/home', methods=['GET'])
+def home():
+    return render_template('home.html')
+
 @app.route('/experiment/piglatin/', methods=['GET', 'POST'])
 def pig():
     def piglatin(inp):

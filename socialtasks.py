@@ -54,9 +54,6 @@ class ensure_fb_auth:
             session['access_token'] = access_token = auth_response[0]
             session['expires'] = expires = int(auth_response[1])
 
-        print expires <= time.time()
-        print request.path
-
         if not access_token or expires <= time.time():
             return redirect(oauth_login_url(
                     get_permalink_path(request.path)))
@@ -238,7 +235,6 @@ def parse_message_content(content, assigner):
 @app.route('/task/<id>/', methods=['GET'])
 @ensure_fb_auth
 def view_task(id):
-    print request.path
     me = get_me()
     return render_template('view_task.html', me=me)
 

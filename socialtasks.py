@@ -7,7 +7,7 @@ import urllib2
 import time
 import datetime
 
-from flask import Flask, session, request, redirect, render_template
+from flask import Flask, session, request, redirect, render_template, jsonify
 from flaskext.sqlalchemy import SQLAlchemy
 
 from models import app, db, Fbuser, Task, Comment
@@ -18,7 +18,6 @@ Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
 
 app = Flask(__name__)
 
-@decorators.memoized
 def get_me():
     return fb_call('me', args={'access_token': session['access_token']})
 
@@ -160,6 +159,15 @@ def get_fully_qualified_path(short_path='/'):
     else:
         return 'https://' + request.host + short_path
 
+@app.route('/typeahead/json/', methods=['GET'])
+def typeahead():
+    if 'access_token' in session and int(session['expires']) >= time.time():
+        user_friends = fb_call('me/friends',
+                               args={'access_token':
+                                     session['access_token']})
+        return jsonify(user_friends)
+    else:
+        return jsonify({})
 
 @app.route('/close/', methods=['GET', 'POST'])
 def close():
@@ -259,7 +267,7 @@ def make_comment(content=None):
         author = me['id']
         creation_time = datetime.datetime.today()
         task_id = request.form['task_id']
-        
+
         comment = Comment(comment_id, task_id, datetime.datetime.today(), author, contents)
         db.session.add(comment)
         db.session.commit()
@@ -267,8 +275,8 @@ def make_comment(content=None):
         to_return = '<div class="well"> <div class="clearfix"> <img src="https://graph.facebook.com/' + author + '/picture" class="small-picture"> <strong>' + str(me['name']) + ' says...</strong> </div> <br> <blockquote> <p>' + contents + '</p> <br> <small>posted at ' + str(creation_time) + '</small> </blockquote> </div>'
         return to_return
     raise Exception
-    
-    
+
+
 @app.route('/task/<t_id>/', methods=['GET'])
 @ensure_fb_auth
 def view_task(t_id):

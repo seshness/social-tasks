@@ -1,18 +1,22 @@
 import base64
 import os
 import os.path
-import simplejson as json
+import json
 import urllib
 import urllib2
 import time
+import datetime
 
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
-from models import app, db
+from models import app, db, Fbuser
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
+
+def get_me():
+    return fb_call('me', args={'access_token': session['access_token']})
 
 def oauth_login_url(next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
@@ -48,6 +52,15 @@ class ensure_fb_auth:
             return redirect(oauth_login_url(
                     get_permalink_path(request.path)))
         else:
+	    me = get_me()
+	    user_id = str(me['id'])
+    	    all_users = Fbuser.query.all()
+    	    user = Fbuser.query.filter_by(facebook_id=user_id).first()
+    	    if not user:
+	      user = Fbuser(user_id)
+              db.session.add(user)
+              db.session.commit()
+            print "yay"
             return self.func(*args)
 
 def get_permalink_path(path):
@@ -145,6 +158,7 @@ def get_fully_qualified_path(short_path):
 def close():
     return render_template('close.html')
 
+
 @app.route('/', methods=['GET', 'POST'])
 @ensure_fb_auth
 def root(content=None):
@@ -152,7 +166,7 @@ def root(content=None):
     if access_token:
         if not content:
             content = home()
-        me = fb_call('me', args={'access_token': access_token})
+        me = get_me()
         app_friends = fql(
             "SELECT uid, name, is_app_user, pic_square "
             "FROM user "
@@ -179,7 +193,6 @@ def create_task():
 @app.route('/task/make/', methods=['POST'])
 @ensure_fb_auth
 def make_task(content=None):
-    print "hi!!!!!"
     from sqlalchemy import func
     size = db.session.query(func.count(Task.task_id))
     access_token = session['access_token']

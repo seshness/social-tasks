@@ -6,7 +6,7 @@ import urllib
 import urllib2
 
 from flask import Flask, request, redirect, render_template
-#from flaskext.sqlalchemy import SQLAlchemy
+from flaskext.sqlalchemy import SQLAlchemy
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 

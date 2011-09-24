@@ -110,15 +110,15 @@ def get_home():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     print get_home()
+    access_token = None
     if 'access_token' in session:
         access_token = session['access_token']
     elif request.args.get('code', None):
         access_token = fbapi_auth(request.args.get('code'))[0]
         session['access_token'] = access_token
 
-    me = fb_call('me', args={'access_token': access_token})
-
     if access_token:
+        me = fb_call('me', args={'access_token': access_token})
         app_friends = fql(
             "SELECT uid, name, is_app_user, pic_square "
             "FROM user "

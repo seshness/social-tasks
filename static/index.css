@@ -32,6 +32,11 @@ columns and not 16. */
   margin: -20px -20px 20px;
 }
 
+img.small-picture {
+  height: 30px;
+  width: 30px;
+}
+
 /* Styles you shouldn't keep as they are for displaying this base example only */
 .content .span10,
 .content .span4 {

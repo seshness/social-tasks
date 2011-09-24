@@ -42,12 +42,13 @@ class Task(db.Model):
                                lazy='dynamic')
 
     def __init__(self, task_id, creation_time, assigner_id, task_name,
-                 contents):
+                 contents, status):
         self.task_id = task_id
         self.creation_time = creation_time
         self.assigner_id = assigner_id
         self.contents = contents
 	self.task_name = task_name
+        self.done = status
 
     def add_assignee(self, assignee):
         self.assignees.append(assignee)

@@ -130,7 +130,8 @@ def index():
             app=app,
             me=me,
             appId=FBAPI_APP_ID,
-            token=access_token)
+            token=access_token,
+            content=home())
     else:
         print oauth_login_url(next_url=get_home())
         return redirect(oauth_login_url(next_url=get_home()))

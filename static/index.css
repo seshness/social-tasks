@@ -60,7 +60,7 @@ textarea.span13 {
   min-height: 100px;
 }
 
-label, textarea {
+label, textarea, input {
   font-size: 20px;
 }
 

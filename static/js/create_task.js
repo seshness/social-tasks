@@ -5,7 +5,7 @@ $(function () {
 	$.ajax({
 	  type: 'POST',
 	  url: '/task/make/',
-	  data: {'content': $('#task_text').val()},
+	  data: {'content': $('#task_text').val(), 'title': $('#task_title').val()},
 	  success: function(response) {
 	    alert('successful post');
         $('#main_content').load('ajax/home/');

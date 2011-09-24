@@ -1,4 +1,4 @@
-!function ( $ ) {
+function ( $ ) {
   function prepareCreateTask() {
     $('#create_task').click(function (event) {
 	  event.preventDefault();

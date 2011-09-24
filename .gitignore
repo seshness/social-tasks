@@ -17,3 +17,7 @@
 *.orig
 .DS_Store
 TAGS
+.Python
+bin/
+include/
+lib/

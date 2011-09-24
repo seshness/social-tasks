@@ -3,6 +3,7 @@ html, body {
 }
 body {
   padding-top: 40px; /* 40px to make the container go all the way to the bottom of the topbar */
+  font-family: "Trebuchet MS", "Trebuchet MS", Arial, sans-serif;
 }
 .container > footer p {
   text-align: center; /* center align it with the container */
@@ -59,7 +60,7 @@ textarea.span13 {
   min-height: 100px;
 }
 
-label, textarea {
+label, textarea, input {
   font-size: 20px;
 }
 
@@ -75,4 +76,11 @@ label, textarea {
 
 .topbar-inner, .topbar .fill {
   background-color: #0064CD;
+  background-image: -webkit-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -o-linear-gradient(top, #049cdb, #0064cd);
+  background-image: linear-gradient(top, #049cdb, #0064cd);
+}
+
+.topbar a {
+  color: #ddd;
 }

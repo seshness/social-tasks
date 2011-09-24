@@ -147,15 +147,15 @@ def index():
 def close():
     return render_template('close.html')
 
-@app.route('/experiment/', methods=['GET', 'POST'])
-def close():
-    def factorial(value):
-        accum = 1
-        for i in range(1, int(value)+1):
-            accum *= i
-        return accum
-    n = request.args.get('n', None)
-    return render_template('experiment.html', fact=factorial(n))
+@app.route('/experiment/piglatin/', methods=['GET', 'POST'])
+def pig():
+    def piglatin(inp):
+        if len(inp) < 3:
+            return inp+"ay"
+        else:
+            return inp[1:]+inp[0]+"ay"
+    inp = request.args.get('inp', None)
+    return render_template('experiment.html', out=piglatin(inp));
 
 
 if __name__ == '__main__':

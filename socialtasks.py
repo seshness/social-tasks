@@ -110,6 +110,7 @@ def get_home():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     print get_home()
+    access_token = None
     if 'access_token' in session:
         access_token = session['access_token']
     elif request.args.get('code', None):

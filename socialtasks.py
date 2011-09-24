@@ -5,6 +5,7 @@ import json
 import urllib
 import urllib2
 import time
+import datetime
 
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
@@ -192,7 +193,6 @@ def create_task():
 @app.route('/task/make/', methods=['POST'])
 @ensure_fb_auth
 def make_task(content=None):
-    print "hi!!!!!"
     from sqlalchemy import func
     size = db.session.query(func.count(Task.task_id))
     access_token = session['access_token']

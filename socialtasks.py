@@ -10,7 +10,7 @@ import datetime
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
-from models import app, db, Fbuser, Task
+from models import app, db, Fbuser, Task, Comment
 import decorators
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')

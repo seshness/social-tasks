@@ -1,5 +1,5 @@
 $(function () {
-  $('#submit_task').click(function (event) {
+  $('#create_form').submit(function (event) {
     event.preventDefault();
 	alert('sending ajax post');
 	.ajax({

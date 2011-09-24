@@ -142,9 +142,21 @@ def index():
         return redirect(oauth_login_url(next_url=get_home()))
 
 
+
 @app.route('/close/', methods=['GET', 'POST'])
 def close():
     return render_template('close.html')
+
+@app.route('/experiment/piglatin/', methods=['GET', 'POST'])
+def pig():
+    def piglatin(inp):
+        if len(inp) < 3:
+            return inp+"ay"
+        else:
+            return inp[1:]+inp[0]+"ay"
+    inp = request.args.get('inp', None)
+    return render_template('experiment.html', out=piglatin(inp));
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

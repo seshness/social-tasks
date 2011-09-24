@@ -208,7 +208,6 @@ def make_task(content=None):
     if access_token:
         me = fb_call('me', args={'access_token': access_token})
         user_id = me['id']
-        user = Fbuser.query.filter_by(facebook_id=user_id).first()
         task = Task(size, datetime.datetime.today(), str(me['id']), request.form['title'], content, False)
 
         assignees = parse_message_content(content, str(me['name']))

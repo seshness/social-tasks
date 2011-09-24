@@ -16,7 +16,7 @@
                 <tbody>
                     {% for task in user_assigned %}
                     <tr>
-                        <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
+                        <td><a gref="#" class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
                         <td class="pictures">
                             {% for assignee in task.assignees %}
                             <center><a href="http://www.facebook.com/{{assignee.facebook_id}}">

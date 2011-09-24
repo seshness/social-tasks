@@ -36,6 +36,7 @@ columns and not 16. */
 img.small-picture {
   height: 30px;
   width: 30px;
+  padding: 0px 10px;
 }
 
 img.tiny-picture {

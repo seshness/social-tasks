@@ -4,6 +4,7 @@ import os.path
 import simplejson as json
 import urllib
 import urllib2
+import time
 
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
@@ -13,23 +14,61 @@ from models import app, db
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
 
-def oauth_login_url(preserve_path=True, next_url=None):
+def oauth_login_url(next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
                     "?client_id=%s&redirect_uri=%s" %
-                    (app.config['FBAPI_APP_ID'], get_home()))
+                    (app.config['FBAPI_APP_ID'],
+                     next_url if next_url else get_home()))
 
     if app.config['FBAPI_SCOPE']:
         fb_login_uri += "&scope=%s" % ",".join(app.config['FBAPI_SCOPE'])
     return fb_login_uri
 
+class ensure_fb_auth:
+    def __init__(self, func):
+        '''
+        Ensure that that user has a valid Facebook presence. If not, redirect
+        the user to the Facebook authentication page, while attempting to have
+        them link back to the current page.
+        '''
+        self.func = func
+        self.__name__ = func.__name__
+        self.__doc__ = func.__doc__
+    def __call__(self, *args):
+        access_token,expires = None, None
+        if 'access_token' in session and 'expires' in session:
+            access_token = session['access_token']
+            expires = session['expires']
+        elif request.args.get('code', None):
+            auth_response = fbapi_auth(request.args.get('code'))
+            session['access_token'], session['expires'] = \
+                access_token, expires = auth_response
+
+        if not access_token or expires <= time.time():
+            print 'QWERTYUIOP'
+            return redirect(oauth_login_url(
+                    get_permalink_path(request.path)))
+        else:
+            print 'asdfghjkl'
+            return self.func(*args)
+
+def get_permalink_path(path):
+    '''
+    Deal with the mixed environment of AJAXified partials and full paths.
+    '''
+    if 'ajax' in path or 'task' in path:
+        path = get_fully_qualified_path('/permalink' + path)
+    else:
+        path = get_fully_qualified_path(path)
+    if not path:
+        path = get_fully_qualified_path('/')
+    return path
 
 def simple_dict_serialisation(params):
     return "&".join(map(lambda k: "%s=%s" % (k, params[k]), params.keys()))
 
-
 def base64_url_encode(data):
     return base64.urlsafe_b64encode(data).rstrip('=')
-
 
 def fbapi_get_string(path, domain=u'graph', params=None, access_token=None,
                      encode_func=urllib.urlencode):
@@ -51,7 +90,6 @@ def fbapi_get_string(path, domain=u'graph', params=None, access_token=None,
 
     return result
 
-
 def fbapi_auth(code):
     params = {'client_id': app.config['FBAPI_APP_ID'],
               'redirect_uri': get_home(),
@@ -67,7 +105,6 @@ def fbapi_auth(code):
         result_dict[key] = value
     return (result_dict["access_token"], result_dict["expires"])
 
-
 def fbapi_get_application_access_token(id):
     token = fbapi_get_string(
         path=u"/oauth/access_token",
@@ -80,7 +117,6 @@ def fbapi_get_application_access_token(id):
         print 'Token mismatch: %s not in %s' % (id, token)
     return token
 
-
 def fql(fql, token, args=None):
     if not args:
         args = {}
@@ -90,34 +126,34 @@ def fql(fql, token, args=None):
         urllib2.urlopen("https://api.facebook.com/method/fql.query?" +
                         urllib.urlencode(args)).read())
 
-
 def fb_call(call, args=None):
     return json.loads(urllib2.urlopen("https://graph.facebook.com/" + call +
                                       '?' + urllib.urlencode(args)).read())
 
-
 app.config.from_object(__name__)
 app.config.from_object('conf.Config')
 
-
 def get_home():
-    if request.host.find('localhost') != -1:
-        return 'http://' + request.host + '/'
-    else:
-        return 'https://' + request.host + '/'
+    return get_fully_qualified_path('/')
 
+def get_fully_qualified_path(short_path):
+    if request.host.find('localhost') != -1:
+        return 'http://' + request.host + short_path
+    else:
+        return 'https://' + request.host + short_path
+
+
+@app.route('/close/', methods=['GET', 'POST'])
+def close():
+    return render_template('close.html')
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
-    print get_home()
-    access_token = None
-    if 'access_token' in session:
-        access_token = session['access_token']
-    elif request.args.get('code', None):
-        access_token = fbapi_auth(request.args.get('code'))[0]
-        session['access_token'] = access_token
-
+@ensure_fb_auth
+def root(content=None):
+    access_token = session['access_token']
     if access_token:
+        if not content:
+            content = home()
         me = fb_call('me', args={'access_token': access_token})
         app_friends = fql(
             "SELECT uid, name, is_app_user, pic_square "
@@ -131,20 +167,24 @@ def index():
             me=me,
             appId=FBAPI_APP_ID,
             token=access_token,
-            content=home())
+            content=content)
     else:
         print oauth_login_url(next_url=get_home())
         return redirect(oauth_login_url(next_url=get_home()))
 
-@app.route('/close/', methods=['GET', 'POST'])
-def close():
-    return render_template('close.html')
-
-@app.route('/task/create', methods=['GET', 'POST'])
+@app.route('/task/create/', methods=['GET', 'POST'])
+@ensure_fb_auth
 def create_task():
     return render_template('create_task.html')
 
-@app.route('/ajax/home', methods=['GET'])
+@app.route('/task/<id>/', methods=['GET'])
+@ensure_fb_auth
+def view_task():
+    print request.path
+    return render_template('view_task.html')
+
+@app.route('/ajax/home/', methods=['GET'])
+@ensure_fb_auth
 def home():
     access_token = session['access_token']
     me = fb_call('me', args={'access_token': access_token})
@@ -158,6 +198,10 @@ def home():
 
     return render_template('home.html', me=me, app=app, likes=likes,
                            friends=friends, photos=photos)
+
+@app.route('/permalink/<path:ajax_path>')
+def permalink(ajax_path):
+    return root(render_template('permalink_load.html', ajax_path=ajax_path))
 
 @app.route('/experiment/piglatin/', methods=['GET', 'POST'])
 def pig():

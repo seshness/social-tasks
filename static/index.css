@@ -84,3 +84,7 @@ label, textarea, input {
 .topbar a {
   color: #ddd;
 }
+
+td .pictures {
+  width: 100;
+}

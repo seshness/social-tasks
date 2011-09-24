@@ -5,21 +5,23 @@
   </div>
   <div class="row">
     <div class="span10">
+	  <h2>Requested by me</h2>
       <table class="zebra-striped">
 	    <thead>
 	      <tr>
 	        <th>Task</th>
-	        <th>Requested by</th>
+	        <th>Assigned to</th>
 		</thead>
 		<tbody>
             {% for task in user_assigned %}
 	        <tr>
                 <td><a class="task_entry" id="1">{{task.task_name}}</a></td>
-                <td><img src="https://graph.facebook.com/{{task.assigner_id}}/picture" alt="{{me.name}}" class="small-picture"></td>
+                <td class="pictures"><img src="https://graph.facebook.com/{{task.assigner_id}}/picture" alt="{{me.name}}" class="small-picture"></td>
             </tr>
             {% endfor %}
 	    </tbody>
       </table>
+	  <h2>Assigned to me</h2>
       <table class="zebra-striped">
 	    <thead>
 	      <tr>
@@ -30,7 +32,7 @@
             {% for task in assigned_to_user %}
 	        <tr>
                 <td><a class="task_entry" id="1">{{task.task_name}}</a></td>
-                <td><img src="https://graph.facebook.com/{{task.assigner_id}}/picture" alt="{{me.name}}" class="small-picture"></td>
+                <td class="pictures"><img src="https://graph.facebook.com/{{task.assigner_id}}/picture" alt="{{me.name}}" class="small-picture"></td>
             </tr>
             {% endfor %}
 	    </tbody>

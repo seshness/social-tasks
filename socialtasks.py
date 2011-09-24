@@ -223,6 +223,7 @@ def make_task(content=None):
 
         for assignee_name in assignees:
             f = fbuser_from_name(assignee_name)
+            print f
             if f: task.add_assignee(f)
 
         db.session.add(task)

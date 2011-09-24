@@ -5,13 +5,13 @@ import simplejson as json
 import urllib
 import urllib2
 
-from flask import Flask, request, redirect, render_template
+from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
 from models import app, db
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
-
+Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
 
 def oauth_login_url(preserve_path=True, next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
@@ -110,41 +110,30 @@ def get_home():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     print get_home()
-    if request.args.get('code', None):
+    access_token = None
+    if 'access_token' in session:
+        access_token = session['access_token']
+    elif request.args.get('code', None):
         access_token = fbapi_auth(request.args.get('code'))[0]
+        session['access_token'] = access_token
 
+    if access_token:
         me = fb_call('me', args={'access_token': access_token})
-        app = fb_call(FBAPI_APP_ID, args={'access_token': access_token})
-        likes = fb_call('me/likes',
-                        args={'access_token': access_token, 'limit': 4})
-        friends = fb_call('me/friends',
-                          args={'access_token': access_token, 'limit': 4})
-        photos = fb_call('me/photos',
-                         args={'access_token': access_token, 'limit': 16})
-
-        redir = get_home() + 'close/'
-        POST_TO_WALL = ("https://www.facebook.com/dialog/feed?redirect_uri=%s&"
-                        "display=popup&app_id=%s" % (redir, FBAPI_APP_ID))
-
         app_friends = fql(
             "SELECT uid, name, is_app_user, pic_square "
             "FROM user "
             "WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND "
             "  is_app_user = 1", access_token)
 
-        SEND_TO = ('https://www.facebook.com/dialog/send?'
-                   'redirect_uri=%s&display=popup&app_id=%s&link=%s'
-                   % (redir, FBAPI_APP_ID, get_home()))
-
         return render_template(
-            'index.html', appId=FBAPI_APP_ID, token=access_token, likes=likes,
-            friends=friends, photos=photos, app_friends=app_friends, app=app,
-            me=me, POST_TO_WALL=POST_TO_WALL, SEND_TO=SEND_TO)
+            'index.html',
+            app=app,
+            me=me,
+            appId=FBAPI_APP_ID,
+            token=access_token)
     else:
         print oauth_login_url(next_url=get_home())
         return redirect(oauth_login_url(next_url=get_home()))
-
-
 
 @app.route('/close/', methods=['GET', 'POST'])
 def close():
@@ -152,7 +141,18 @@ def close():
 
 @app.route('/ajax/home', methods=['GET'])
 def home():
-    return render_template('home.html')
+    access_token = session['access_token']
+    me = fb_call('me', args={'access_token': access_token})
+    app = fb_call(FBAPI_APP_ID, args={'access_token': access_token})
+    likes = fb_call('me/likes',
+                    args={'access_token': access_token, 'limit': 4})
+    friends = fb_call('me/friends',
+                      args={'access_token': access_token, 'limit': 4})
+    photos = fb_call('me/photos',
+                     args={'access_token': access_token, 'limit': 16})
+
+    return render_template('home.html', me=me, app=app, likes=likes,
+                           friends=friends, photos=photos)
 
 @app.route('/experiment/piglatin/', methods=['GET', 'POST'])
 def pig():

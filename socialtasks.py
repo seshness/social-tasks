@@ -187,7 +187,7 @@ def make_task(content=None):
         task = create_task(size, datetime.today(), me.id, content)
         db.session.add(task)
         db.session.commit()
-    return
+
                         
 
 @app.route('/task/<id>/', methods=['GET'])

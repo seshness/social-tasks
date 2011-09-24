@@ -14,6 +14,9 @@ from models import app, db, Fbuser
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
 
+def get_me():
+    return fb_call('me', args={'access_token': session['access_token']})
+
 def oauth_login_url(next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
                     "?client_id=%s&redirect_uri=%s" %
@@ -48,7 +51,15 @@ class ensure_fb_auth:
             return redirect(oauth_login_url(
                     get_permalink_path(request.path)))
         else:
-	    
+	    me = get_me()
+	    user_id = str(me['id'])
+    	    all_users = Fbuser.query.all()
+    	    user = Fbuser.query.filter_by(facebook_id=user_id).first()
+    	    if not user:
+	      user = Fbuser(user_id)
+              db.session.add(user)
+              db.session.commit()
+            print "yay"
             return self.func(*args)
 
 def get_permalink_path(path):
@@ -147,9 +158,6 @@ def close():
     return render_template('close.html')
 
 
-def get_me():
-    return fb_call('me', args={'access_token': session['access_token']})
-
 @app.route('/', methods=['GET', 'POST'])
 @ensure_fb_auth
 def root(content=None):
@@ -215,14 +223,6 @@ def home():
                       args={'access_token': access_token, 'limit': 4})
     photos = fb_call('me/photos',
                      args={'access_token': access_token, 'limit': 16})
-
-    user_id = str(me['id'])
-    all_users = Fbuser.query.all()
-    user = Fbuser.query.filter_by(facebook_id=user_id).first()
-    if not user:
-	user = Fbuser(user_id)
-        db.session.add(user)
-        db.session.commit()
 
     return render_template('home.html', me=me, app=app, likes=likes,
                            friends=friends, photos=photos)

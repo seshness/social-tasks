@@ -94,8 +94,8 @@ def fb_call(call, args=None):
                                       '?' + urllib.urlencode(args)).read())
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+pg8000://user:password@host:port/dbname[?key=value&key=value...]'
-db = SQLAlchemy(app)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+pg8000://user:password@host:port/dbname[?key=value&key=value...]'
+#db = SQLAlchemy(app)
 app.config.from_object(__name__)
 app.config.from_object('conf.Config')
 

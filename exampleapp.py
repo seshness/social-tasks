@@ -142,9 +142,21 @@ def index():
         return redirect(oauth_login_url(next_url=get_home()))
 
 
+
 @app.route('/close/', methods=['GET', 'POST'])
 def close():
     return render_template('close.html')
+
+@app.route('/experiment/', methods=['GET', 'POST'])
+def close():
+    def factorial(value):
+        accum = 1
+        for i in range(1, int(value)+1):
+            accum *= i
+        return accum
+    n = request.args.get('n', None)
+    return render_template('experiment.html', fact=factorial(n))
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

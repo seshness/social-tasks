@@ -150,7 +150,7 @@ def index():
 def close():
     return render_template('close.html')
 
-@app.route('/ajax/home.html', methods=['GET'])
+@app.route('/ajax/home', methods=['GET'])
 def home():
     return render_template('home.html')
 

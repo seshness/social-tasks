@@ -29,8 +29,15 @@ class Task(db.Model):
 
     assigner_id = db.Column(db.Integer, db.ForeignKey('fbuser.facebook_id'))
     done = db.Column(db.Boolean)
+    task_name = db.Column(db.Text)
     contents = db.Column(db.Text)
     comments = db.relationship('Comments', backref='task', lazy='dynamic')
+
+    def __init__(self, task_id, creation_time, assigner_id, contents):
+        self.task_id = task_id
+        self.creation_time = creation_time
+        self.assigner_id = assigner_id
+        self.contents = contents
 
 class Comments(db.Model):
     comment_id = db.Column(db.Integer, primary_key=True)
@@ -38,6 +45,13 @@ class Comments(db.Model):
     creation_time = db.Column(db.DateTime)
     author = db.Column(db.Integer, db.ForeignKey('fbuser.facebook_id'))
     contents = db.Column(db.Text)
+
+    def __init__(self, comment_id, task_id, creation_time, author, contents):
+        self.comment_id = comment_id
+        self.task_id = task_id
+        self.creation_time = creation_time
+        self.author = author
+        self.contents = contents
 
 class Fbuser(db.Model):
     facebook_id = db.Column(db.Integer, primary_key=True)

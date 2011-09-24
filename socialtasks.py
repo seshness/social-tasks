@@ -10,7 +10,7 @@ import datetime
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
-from models import app, db, Fbuser
+from models import app, db, Fbuser, Task
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
@@ -38,6 +38,7 @@ class ensure_fb_auth:
         self.func = func
         self.__name__ = func.__name__
         self.__doc__ = func.__doc__
+
     def __call__(self, *args):
         access_token, expires = None, None
         if 'access_token' in session and 'expires' in session:
@@ -189,19 +190,22 @@ def root(content=None):
 def create_task():
     return render_template('create_task.html')
 
-
 @app.route('/task/make/', methods=['POST'])
 @ensure_fb_auth
 def make_task(content=None):
     from sqlalchemy import func
-    size = db.session.query(func.count(Task.task_id))
+    #size = db.session.query(func.count(Task.task_id))
+    size = len(Task.query.all())+1
     access_token = session['access_token']
-    content = session['content']
+    content = request.form['content']
     if access_token:
         me = fb_call('me', args={'access_token': access_token})
-        task = create_task(size, datetime.today(), me.id, content)
+        task = Task(size, datetime.datetime.today(), str(me['id']), content)
         db.session.add(task)
         db.session.commit()
+        return "Success"
+
+    raise Exception
 
 @app.route('/task/<id>/', methods=['GET'])
 @ensure_fb_auth

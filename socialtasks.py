@@ -215,16 +215,11 @@ def make_task(content=None):
                     content,
                     False)
 
-        assignees = set([str(me['name'])])
-        assignees.union(parse_message_content(content))
-
-        if not assignees or len(assignees) == 0:
-            assignees = [str(me['name'])]
-
+        assignees = parse_message_content(content)
         for assignee_name in assignees:
-            f = fbuser_from_name(assignee_name)
-            print f
-            if f: task.add_assignee(f)
+            task.add_assignee(fbuser_from_name(assignee_name))
+#         task.add_assignee(Fbuser.query.filter_by(
+#                 facebook_id=str(me['id'])).first_or_404())
 
         db.session.add(task)
         db.session.commit()
@@ -247,8 +242,7 @@ def parse_message_content(content):
 def fbuser_from_name(name):
     import re
 
-    name = name.lower()
-
+    name = re.sub('\s', '', name).lower()
     me = get_me()
     myname = re.sub('\s', '', me['name']).lower()
     if name == myname:
@@ -260,11 +254,13 @@ def fbuser_from_name(name):
         "WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())"
         , session['access_token'])
 
+    print app_friends
     for user in app_friends:
         name_compressed = re.sub('\s', '', user['name']).lower()
         if name_compressed == name:
             return Fbuser.query.filter_by(facebook_id=str(user['uid'])).first_or_404()
 
+    print 'returning None for ' + name
     return None
 
 @app.route('/task/comment/', methods=['POST'])

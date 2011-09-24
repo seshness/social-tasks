@@ -264,7 +264,7 @@ def make_comment(content=None):
         db.session.add(comment)
         db.session.commit()
 
-        to_return = '<div class="well"> <div class="clearfix"> <img src="https://graph.facebook.com/' + author + '/picture" class="small-picture"> <strong>' + str(me['name']) + ' says...</strong> </div> <div>' + contents + '</div> <br><br> <small>posted at ' + str(creation_time) + '</small> </div>'
+        to_return = '<div class="well"> <div class="clearfix"> <img src="https://graph.facebook.com/' + author + '/picture" class="small-picture"> <strong>' + str(me['name']) + ' says...</strong> </div> <br> <blockquote> <p>' + contents + '</p> <br> <small>posted at ' + str(creation_time) + '</small> </blockquote> </div>'
         return to_return
     raise Exception
     

@@ -9,13 +9,17 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://socialtasks:alert
 db = SQLAlchemy(app)
 
 assignee_tasks = db.Table('assignee_tasks',
-                      db.Column('task_id', db.Integer, db.ForeignKey('task.task_id')),
-                      db.Column('facebook_id', db.Integer, db.ForeignKey('fbuser.facebook_id'))
+                      db.Column('task_id', db.Integer,
+                                db.ForeignKey('task.task_id')),
+                      db.Column('facebook_id', db.Integer,
+                                db.ForeignKey('fbuser.facebook_id'))
                       )
 
 hidefrom_tasks = db.Table('hidefrom_tasks',
-                      db.Column('task_id', db.Integer, db.ForeignKey('task.task_id')),
-                      db.Column('facebook_id', db.Integer, db.ForeignKey('fbuser.facebook_id'))
+                      db.Column('task_id', db.Integer,
+                                db.ForeignKey('task.task_id')),
+                      db.Column('facebook_id', db.Integer,
+                                db.ForeignKey('fbuser.facebook_id'))
                       )
 
 class Task(db.Model):
@@ -23,30 +27,35 @@ class Task(db.Model):
     creation_time = db.Column(db.DateTime)
 
     assignees = db.relationship('Fbuser', secondary=assignee_tasks,
-                                backref=db.backref('assignee_task', lazy='dynamic'))
+                                backref=db.backref('assignee_task',
+                                                   lazy='dynamic'))
     hidefrom  = db.relationship('Fbuser', secondary=hidefrom_tasks,
-                                backref=db.backref('hiddefrom_task', lazy='dynamic'))
+                                backref=db.backref('hiddefrom_task',
+                                                   lazy='dynamic'))
 
     assigner_id = db.Column(db.Integer, db.ForeignKey('fbuser.facebook_id'))
     done = db.Column(db.Boolean)
     task_name = db.Column(db.Text)
     contents = db.Column(db.Text)
-    comments = db.relationship('Comments', backref='task', lazy='dynamic')
+    comments = db.relationship('Comment', backref='task',
+                               lazy='dynamic')
 
-    def __init__(self, task_id, creation_time, assigner_id, contents):
+    def __init__(self, task_id, creation_time, assigner_id,
+                 contents):
         self.task_id = task_id
         self.creation_time = creation_time
         self.assigner_id = assigner_id
         self.contents = contents
 
-class Comments(db.Model):
+class Comment(db.Model):
     comment_id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(db.Integer, db.ForeignKey('task.task_id'))
     creation_time = db.Column(db.DateTime)
     author = db.Column(db.Integer, db.ForeignKey('fbuser.facebook_id'))
     contents = db.Column(db.Text)
 
-    def __init__(self, comment_id, task_id, creation_time, author, contents):
+    def __init__(self, comment_id, task_id, creation_time,
+                 author, contents):
         self.comment_id = comment_id
         self.task_id = task_id
         self.creation_time = creation_time
@@ -62,10 +71,6 @@ class Fbuser(db.Model):
         self.facebook_id = facebook_id
 
     def __repr__(self):
-<<<<<<< HEAD
-        return '<User %r>' % repr(self.facebook_id)
-=======
         return '<FbUser %r>' % repr(self.facebook_id)
->>>>>>> 76688a64380db7603813bd28a4a281fd2d56fdcf
 
 

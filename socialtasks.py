@@ -9,7 +9,6 @@ import datetime
 
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
-from flaskext.cache import Cache
 
 from models import app, db, Fbuser, Task
 import decorators
@@ -18,7 +17,6 @@ FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
 
 app = Flask(__name__)
-cache = Cache(app)
 
 @decorators.memoized
 def get_me():
@@ -135,7 +133,6 @@ def fbapi_get_application_access_token(id):
         print 'Token mismatch: %s not in %s' % (id, token)
     return token
 
-@cache.memoize(50)
 def fql(fql, token, args=None):
     if not args:
         args = {}
@@ -145,7 +142,6 @@ def fql(fql, token, args=None):
         urllib2.urlopen("https://api.facebook.com/method/fql.query?" +
                         urllib.urlencode(args)).read())
 
-@cache.memoize(50)
 def fb_call(call, args=None):
     return json.loads(urllib2.urlopen("https://graph.facebook.com/" + call +
                                       '?' + urllib.urlencode(args)).read())

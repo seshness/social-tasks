@@ -253,9 +253,15 @@ def make_comment(content=None):
 @ensure_fb_auth
 def view_task(t_id):
     print "this is id: " + t_id
+    comments = []
     task = Task.query.filter_by(task_id = t_id).first()
+    for comment in task.comments:
+       author = fb_call(comment.author, args={'access_token': session['access_token']})
+       author_name = author['name']
+       c_dict = {'author': comment.author, 'contents': comment.contents, 'creation_time': comment.creation_time, 'author_name': author_name}
+       comments.append(c_dict)
     me = get_me()
-    return render_template('view_task.html', me=me, task=task)
+    return render_template('view_task.html', me=me, task=task, comments=comments)
 
 @app.route('/ajax/home/', methods=['GET'])
 @ensure_fb_auth

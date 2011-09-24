@@ -208,16 +208,23 @@ def make_task(content=None):
     if access_token:
         me = fb_call('me', args={'access_token': access_token})
         user_id = me['id']
-        task = Task(size, datetime.datetime.today(), str(me['id']), request.form['title'], content, False)
+        task = Task(size,
+                    datetime.datetime.today(),
+                    str(me['id']),
+                    request.form['title'],
+                    content,
+                    False)
 
-        assignees = parse_message_content(content, str(me['name']))
+        assignees = set([str(me['name'])])
+        assignees.union(parse_message_content(content))
 
-        if len(assignees) == 0:
+        if not assignees or len(assignees) == 0:
             assignees = [str(me['name'])]
 
         for assignee_name in assignees:
-            task.add_assignee(fbuser_from_name(assignee_name))
-            
+            f = fbuser_from_name(assignee_name)
+            if f: task.add_assignee(f)
+
         db.session.add(task)
         db.session.commit()
 
@@ -225,15 +232,16 @@ def make_task(content=None):
 
     raise Exception
 
-def parse_message_content(content, assigner):
-    words = content.split(' ')
-    assignee = set([])
+def parse_message_content(content):
+    words = content.split()
+    assignees = set([])
 
     for word in words:
+        if len(word) == 0: continue
         if word[0] == '@':
-            assignee.add(word[1:])
+            assignees.add(word[1:])
 
-    return assignee
+    return assignees
 
 def fbuser_from_name(name):
     import re

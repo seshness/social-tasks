@@ -139,6 +139,10 @@ def index():
 def close():
     return render_template('close.html')
 
+@app.route('/task/create', methods=['GET', 'POST'])
+def create_task():
+    return render_template('create_task.html')
+
 @app.route('/ajax/home', methods=['GET'])
 def home():
     access_token = session['access_token']

@@ -48,6 +48,6 @@ class User(db.Model):
         self.facebook_id = facebook_id
 
     def __repr__(self):
-        return '<User %r>' % __repr__(self.facebook_id)
+        return '<User %r>' % repr(self.facebook_id)
 
 

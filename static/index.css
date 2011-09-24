@@ -86,6 +86,6 @@ label, textarea, input {
   color: #ddd;
 }
 
-table td .pictures {
+table th.pictures {
   width: 100;
 }

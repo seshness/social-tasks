@@ -286,6 +286,7 @@ def make_comment(content=None):
 
         return render_template('make_comment.html',
                                me=me,
+                               author=author,
                                contents=contents,
                                creation_time=creation_time)
     raise Exception

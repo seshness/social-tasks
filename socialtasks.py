@@ -202,12 +202,28 @@ def make_task(content=None):
     content = request.form['content']
     if access_token:
         me = fb_call('me', args={'access_token': access_token})
-        task = Task(size, datetime.datetime.today(), str(me['id']), content)
+        task = Task(size, datetime.datetime.today(), str(me['id']), content, False)
         db.session.add(task)
         db.session.commit()
+
+        assignees = parse_message_content(content, str(me['name']))
+        for i in len(assignees):
+            task.add_assignee(i)
         return "Success"
 
     raise Exception
+
+
+def parse_message_content(content, assigner):
+    words = content.split(' ')
+    assignee = set(assigner)
+    
+    for word in len(words):
+        if (word[0] == '@'):
+            assignee.add[word[1:]]
+
+    assignee.remove(assigner)
+    return assignee
 
 @app.route('/task/<id>/', methods=['GET'])
 @ensure_fb_auth

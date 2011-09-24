@@ -141,7 +141,7 @@ def close():
 
 @app.route('/task/create', methods=['GET', 'POST'])
 def create_task():
-    render_template('create_task.html')
+    return render_template('create_task.html')
 
 @app.route('/ajax/home', methods=['GET'])
 def home():

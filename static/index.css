@@ -38,9 +38,8 @@ img.small-picture {
 }
 
 /* Styles you shouldn't keep as they are for displaying this base example only */
-.content .span10,
-.content .span4 {
-  min-height: 500px;
+textarea.span10 {
+  min-height: 100px;
 }
 /* Give a quick and non-cross-browser friendly divider */
 .content .span4 {

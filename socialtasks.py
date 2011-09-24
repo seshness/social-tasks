@@ -117,9 +117,8 @@ def index():
         access_token = fbapi_auth(request.args.get('code'))[0]
         session['access_token'] = access_token
 
-    me = fb_call('me', args={'access_token': access_token})
-
     if access_token:
+        me = fb_call('me', args={'access_token': access_token})
         app_friends = fql(
             "SELECT uid, name, is_app_user, pic_square "
             "FROM user "

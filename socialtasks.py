@@ -8,7 +8,7 @@ import urllib2
 from flask import Flask, session, request, redirect, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
-from models import app, db
+from models import app, db, Fbuser
 
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
@@ -155,6 +155,14 @@ def home():
                       args={'access_token': access_token, 'limit': 4})
     photos = fb_call('me/photos',
                      args={'access_token': access_token, 'limit': 16})
+
+    user_id = str(me['id'])
+    all_users = Fbuser.query.all()
+    user = Fbuser.query.filter_by(facebook_id=user_id).first()
+    if not user:
+	user = Fbuser(user_id)
+        db.session.add(user)
+        db.session.commit()
 
     return render_template('home.html', me=me, app=app, likes=likes,
                            friends=friends, photos=photos)

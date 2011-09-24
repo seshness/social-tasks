@@ -3,6 +3,7 @@ from flaskext.sqlalchemy import SQLAlchemy
 from sqlalchemy import Table, Column, Integer, String, Date, Float
 
 # DB crap
+#SOME FLASK SQLACHEMY METHODS TO SAVE TO DATABASE
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://socialtasks:alert48:pees@ec2-75-101-240-217.compute-1.amazonaws.com/socialtasks'
@@ -63,7 +64,7 @@ class Comment(db.Model):
         self.contents = contents
 
 class Fbuser(db.Model):
-    facebook_id = db.Column(db.Integer, primary_key=True)
+    facebook_id = db.Column(db.String(20), primary_key=True)
     tasks = db.relationship('Task', backref='assigner', lazy='dynamic')
 
 

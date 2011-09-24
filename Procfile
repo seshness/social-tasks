@@ -1,1 +1,1 @@
-web: bin/python exampleapp.py
+web: bin/python socialtasks.py

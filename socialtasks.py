@@ -218,7 +218,6 @@ def make_task(content=None):
 
     raise Exception
 
-
 def parse_message_content(content, assigner):
     words = content.split(' ')
     assignee = set(assigner)
@@ -230,6 +229,38 @@ def parse_message_content(content, assigner):
     assignee.remove(assigner)
     return assignee
 
+@app.route('/task/comment/', methods=['POST'])
+@ensure_fb_auth
+def make_comment(content=None):
+    from sqlalchemy import func
+    comment_id = len(Comment.query.all())+1
+    access_token = session['access_token']
+    contents = request.form['content']
+    if access_token:
+        me = fb_call('me', args={'access_token': access_token})
+        author = me['id']
+        creation_time = datetime.datetime.today()
+        task_id = request.form['task_id']
+        
+        comment = Comment(comment_id, datetime.datetime.today(), author, contents)
+        db.session.add(comment)
+        db.session.commit()
+
+        to_return = '<div class="well"> 
+	    <div class="clearfix"> 
+	      <img src="https://graph.facebook.com/' + author + '/picture" class="small-picture">
+		  <strong>' + str(me['name']) + ' says...</strong>
+	    </div>
+	    <div>' + contents + 
+
+                  '</div>
+		<br><br>
+		<small>posted at ' + creation_time + '</small>
+	  </div>'
+        return to_return
+    raise Exception
+    
+    
 @app.route('/task/<t_id>/', methods=['GET'])
 @ensure_fb_auth
 def view_task(t_id):

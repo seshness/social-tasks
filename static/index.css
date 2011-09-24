@@ -37,6 +37,23 @@ img.small-picture {
   width: 30px;
 }
 
+img.tiny-picture {
+  height: 20px;
+  width: 20px;
+  padding: 0px 5px;
+}
+
+.right-brand {
+  float: right;
+  display: block;
+  padding: 0px 20px 0px;
+  margin-left: -20px;
+  color: white;
+  font-size: 13px;
+  font-weight: 200;
+  line-height: 1;
+}
+
 /* Styles you shouldn't keep as they are for displaying this base example only */
 textarea.span13 {
   min-height: 100px;

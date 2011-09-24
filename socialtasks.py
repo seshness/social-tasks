@@ -43,7 +43,7 @@ class ensure_fb_auth:
         self.__name__ = func.__name__
         self.__doc__ = func.__doc__
 
-    def __call__(self, *args):
+    def __call__(self, **args):
         access_token, expires = None, None
         if 'access_token' in session and 'expires' in session:
             access_token = session['access_token']
@@ -232,9 +232,10 @@ def parse_message_content(content, assigner):
 
 @app.route('/task/<id>/', methods=['GET'])
 @ensure_fb_auth
-def view_task():
+def view_task(id):
     print request.path
-    return render_template('view_task.html')
+    me = get_me()
+    return render_template('view_task.html', me=me)
 
 @app.route('/ajax/home/', methods=['GET'])
 @ensure_fb_auth

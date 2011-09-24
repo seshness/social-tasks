@@ -18,29 +18,12 @@
       <label for="task_text">
         What's the task?
       </label>
-
-      <input type="textarea" value="" id="task_text" class="span13"
-             placeholder="Tag a Facebook friend in your task" />
-
-      <script type="text/javascript">
-        var x = 3;
-        document.observe('dom:loaded', function() {
-        // init
-        tlist2 = new ResizableTextbox(task_text');
-
-        // fetch and feed
-        new Ajax.Request('typeahead/json', {
-          onSuccess: function(transport) {
-          transport.responseText.evalJSON(true).each(function(t){tlist2.autoFeed(t)});
-         }
-        });
-        });
-        </script>
-        <textarea id="task_text" class="span13"/>
-      </div>
-    </div>
-    <div class="actions">
-      <input type="submit" class="btn primary large" value="Create!">
+      <textarea id="task_text" class="span13"/>
     </div>
   </form>
+</div>
+<div class="actions">
+  <input type="submit" class="btn primary large" value="Create!">
+</div>
+</form>
 </div>

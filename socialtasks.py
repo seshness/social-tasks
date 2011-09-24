@@ -13,11 +13,6 @@ from models import app, db
 FBAPI_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 Flask.secret_key = 'pm1yfQmmbZUiAP8Ll/JG9XJWNiebOVyyz1T0nlVED3uE4lpv'
 
-@app.before_request
-def handle_login():
-    if request.args.get('code', None):
-        session['access_token'] = fbapi_auth(request.args.get('code'))[0]
-
 def oauth_login_url(preserve_path=True, next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
                     "?client_id=%s&redirect_uri=%s" %
@@ -146,6 +141,7 @@ def close():
 
 @app.route('/ajax/home', methods=['GET'])
 def home():
+    access_token = session['access_token']
     me = fb_call('me', args={'access_token': access_token})
     app = fb_call(FBAPI_APP_ID, args={'access_token': access_token})
     likes = fb_call('me/likes',
@@ -155,7 +151,8 @@ def home():
     photos = fb_call('me/photos',
                      args={'access_token': access_token, 'limit': 16})
 
-    return render_template('home.html')
+    return render_template('home.html', me=me, app=app, likes=likes,
+                           friends=friends, photos=photos)
 
 @app.route('/experiment/piglatin/', methods=['GET', 'POST'])
 def pig():

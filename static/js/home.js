@@ -4,7 +4,7 @@ $(function () {
      $('#main_content').load('task/create');
   });
   
-  $('.task_entry').click(function (event) {
+  $('a .task_entry').click(function (event) {
     event.preventDefault();
 	$('main_content').load('task/'+$('this').id);
   });

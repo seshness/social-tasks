@@ -1,58 +1,58 @@
 <script type="text/javascript" src="static/js/home.js"></script>
 <div class="content">
-  <div class="page-header">
-    <h1><strong>{{me.name}}</strong>'s Tasks</h1>
-  </div>
-  <div class="row">
-    <div class="span10">
-      <h3>Requested by me</h3>
-      <table class="zebra-striped">
-	<thead>
-	  <tr>
-	    <th>Task</th>
-	    <th class="pictures">Assigned to</th>
-	  </tr>
-	</thead>
-	<tbody>
-          {% for task in user_assigned %}
-          <tr>
-              <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
-              <td class="pictures">
-                  {% for assignee in task.assignees %}
-                  <center><a href="http://www.facebook.com/{{assignee.facebook_id}}">
-                      <img src="https://graph.facebook.com/{{assignee.facebook_id}}/picture" class="small-picture">
-              </a></center>
-                  {% endfor %}
-              </td>
-          </tr>
-          {% endfor %}
-      </tbody>
-      </table>
-      <h3>Assigned to me</h3>
-      <table class="zebra-striped">
-	<thead>
-	  <tr>
-	    <th>Task</th>
-	    <th class="pictures">Requested by</th>
-	  </tr>
-	</thead>
-	<tbody>
-          {% for task in assigned_to_user %}
-	  <tr>
-        <td><a class="task_entry" id="1">{{task.task_name}}</a></td>
-        <td>
-	      <center><a href="http://www.facebook.com/{{task.assigner_id}}">
-		    <img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
-	      </a></center>
-	    </td>
-      </tr>
-          {% endfor %}
-	</tbody>
-      </table>
+    <div class="page-header">
+        <h1><strong>{{me.name}}</strong>'s Tasks</h1>
     </div>
-    <div class="span4">
-      <br><br>
-      <a id="create_task" class="btn primary large">Create Task &raquo;</a>
+    <div class="row">
+        <div class="span10">
+            <h3>Requested by me</h3>
+            <table class="zebra-striped">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th class="pictures">Assigned to</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in user_assigned %}
+                    <tr>
+                        <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
+                        <td class="pictures">
+                            {% for assignee in task.assignees %}
+                            <center><a href="http://www.facebook.com/{{assignee.facebook_id}}">
+                                    <img src="https://graph.facebook.com/{{assignee.facebook_id}}/picture" class="small-picture">
+                            </a></center>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3>Assigned to me</h3>
+            <table class="zebra-striped">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th class="pictures">Requested by</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in assigned_to_user %}
+                    <tr>
+                        <td><a class="task_entry" id="{{task.task_id}}">{{task.task_name}}</a></td>
+                        <td>
+                            <center><a href="http://www.facebook.com/{{task.assigner_id}}">
+                                    <img src="https://graph.facebook.com/{{task.assigner_id}}/picture" class="small-picture">
+                            </a></center>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="span4">
+            <br><br>
+            <a id="create_task" class="btn primary large">Create Task &raquo;</a>
+        </div>
     </div>
-  </div>
 </div>

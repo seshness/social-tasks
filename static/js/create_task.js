@@ -4,7 +4,7 @@ $(function () {
 	.ajax({
 	  type: 'POST',
 	  url: '/task/make/',
-	  data: $('#task_text').val(),
+	  data: {'content': $('#task_text').val()},
 	  success: function(response) {
         $('#main_content').load('ajax/home/');
 	    $('#top_create').attr('class', '');

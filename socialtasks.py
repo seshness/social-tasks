@@ -175,13 +175,15 @@ def root(content=None):
 def create_task():
     return render_template('create_task.html')
 
-@app.route('/task/make/', method=['GET', 'POST'])
+
+@app.route('/task/make/', methods=['POST'])
 @ensure_fb_auth
 def make_task(content=None):
+    print "hi!!!!!"
     from sqlalchemy import func
     size = db.session.query(func.count(Task.task_id))
     access_token = session['access_token']
-    access_token = session['content']
+    content = session['content']
     if access_token:
         me = fb_call('me', args={'access_token': access_token})
         task = create_task(size, datetime.today(), me.id, content)
